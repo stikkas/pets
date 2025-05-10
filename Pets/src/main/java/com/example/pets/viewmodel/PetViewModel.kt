@@ -14,8 +14,8 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -26,6 +26,9 @@ class PetViewModel @Inject constructor(repo: PetRepository) : ViewModel(), PetRe
     val currentCat = _curCat.asSharedFlow()
 
     val catsState = MutableStateFlow(CatsUIState())
+    private val _favoritePets = MutableStateFlow<List<Cat>>(emptyList())
+    val favoritePets: StateFlow<List<Cat>>
+        get() = _favoritePets
 
     init {
         resetCurrent()
@@ -53,5 +56,19 @@ class PetViewModel @Inject constructor(repo: PetRepository) : ViewModel(), PetRe
 
     fun resetCurrent() {
         _curCat.tryEmit(CurrentCat())
+    }
+
+    fun updatePet(cat: Cat) {
+        viewModelScope.launch {
+            update(cat)
+        }
+    }
+
+    fun getFavoritePets() {
+        viewModelScope.launch {
+            getFavorites().collect {
+                _favoritePets.value = it
+            }
+        }
     }
 }
