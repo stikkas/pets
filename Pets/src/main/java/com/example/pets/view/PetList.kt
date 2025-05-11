@@ -17,7 +17,9 @@ import com.example.pets.data.model.Cat
 import com.example.pets.viewmodel.PetViewModel
 
 @Composable
-fun PetList(modifier: Modifier = Modifier, onPetClicked: (Cat) -> Unit) {
+fun PetList(
+    modifier: Modifier = Modifier, onPetClicked: (Cat) -> Unit
+) {
     val model = hiltViewModel<PetViewModel>()
 //    val pets = remember { model.getPets().sortedBy { it.species + it.name } }
     val catsState by model.catsState.collectAsStateWithLifecycle()
@@ -33,7 +35,7 @@ fun PetList(modifier: Modifier = Modifier, onPetClicked: (Cat) -> Unit) {
         AnimatedVisibility(visible = catsState.cats.isNotEmpty()) {
             LazyColumn {
                 items(catsState.cats) {
-                    PetListItem(it, onPetClicked)
+                    PetListItem(it, onPetClicked) { model.updatePet(it) }
                 }
             }
         }

@@ -13,12 +13,15 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.pets.data.model.Cat
 import com.example.pets.ui.theme.primaryContainerDark
+import com.example.pets.viewmodel.PetViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PetDetailsScreen(cat: Cat, onBackPressed: () -> Unit) {
+    val model = hiltViewModel<PetViewModel>()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -36,6 +39,6 @@ fun PetDetailsScreen(cat: Cat, onBackPressed: () -> Unit) {
             )
         }
     ) { pad ->
-        PetDetails(cat, Modifier.padding(pad))
+        PetDetails(cat, { model.updatePet(it) }, Modifier.padding(pad))
     }
 }

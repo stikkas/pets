@@ -17,7 +17,7 @@ fun AppNavigation() {
 
     NavHost(navController, PetsRoute) {
         composable<PetsRoute> {
-            PetsScreen { cat -> navController.navigate(PetDetailsRoute(cat)) }
+            PetsScreen(onPetClicked = { cat -> navController.navigate(PetDetailsRoute(cat)) })
         }
         composable<PetDetailsRoute>(typeMap = mapOf(typeOf<Cat>() to CatParameterType)) { entity ->
             val cat = entity.toRoute<PetDetailsRoute>().cat
